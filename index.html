@@ -14,7 +14,10 @@
     // Wait for Cordova to connect with the device
     //
     document.addEventListener("deviceready",onDeviceReady,false);
-
+	
+	$("#capturePhoto").click(function () {
+      $(this).slideUp();
+    });
     // Cordova is ready to be used!
     //
     function onDeviceReady() {
@@ -22,10 +25,7 @@
         destinationType=navigator.camera.DestinationType;
     }
 	
-	function showAler(text){
-	 alert(Date().now()+' '+text)	
-	}
-
+	
    </script>
 	
   </head>
@@ -51,8 +51,8 @@
         <h1>Camera API</h1>
       </div>
   	  <div data-role="content">
-         <button onclick="showAler('Hello');">Capture Photo</button>
-         <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+         <button id="capturePhoto">Capture Photo</button>
+         <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);" on>From Photo Library</button><br>
          <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
          <img style="display:none;" id="largeImage" src="" />
       </div>
