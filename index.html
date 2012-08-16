@@ -6,6 +6,7 @@
    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
    <script  type="text/javascript" src="js/jquery.mobile-1.0a2.min.js"></script>
    <script type="text/javascript" src="js/funtions.js"></script>
+    <script type="text/javascript" src="phonegap.js"></script>
    <script>
    
    	var pictureSource;   // picture source
@@ -13,11 +14,13 @@
 
     // Wait for Cordova to connect with the device
     //
+	$("#capturePhoto").click(function () {
+     capturePhotoEdit();
+    });
+	
     document.addEventListener("deviceready",onDeviceReady,false);
 	
-	$("#capturePhoto").click(function () {
-      $(this).slideUp();
-    });
+	
     // Cordova is ready to be used!
     //
     function onDeviceReady() {
@@ -52,7 +55,7 @@
       </div>
   	  <div data-role="content">
          <button id="capturePhoto">Capture Photo</button>
-         <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);" on>From Photo Library</button><br>
+         <button id='selectPhoto'>From Photo Library</button><br>
          <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
          <img style="display:none;" id="largeImage" src="" />
       </div>
