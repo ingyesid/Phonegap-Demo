@@ -14,11 +14,7 @@
    	var pictureSource;   // picture source
     var destinationType; // sets the format of returned value 
 
-    // Wait for Cordova to connect with the device
-    //
-	   $('#capturePhoto').click(function () {
-  		capturePhotoEdit();
-	});
+   
 	
 	document.addEventListener("deviceready",onDeviceReady,false);
      // Cordova is ready to be used!
@@ -28,6 +24,12 @@
         destinationType=navigator.camera.DestinationType;
 
     }
+	
+	 // Wait for Cordova to connect with the device
+    //
+	   $('.capturePhoto').click(function () {
+  		capturePhotoEdit();
+	});
 	
    });
    
@@ -56,8 +58,8 @@
         <h1>Camera API</h1>
       </div>
   	  <div data-role="content">
-         <a data-role="button" data-inline="false" id="capturePhoto">Map It</a>
-         <button id='selectPhoto' class='selectPhoto' name='selectPhoto'>From Photo Library</button><br>
+         <a data-role="button" data-inline="false" id="capturePhoto" class="capturePhoto">Capture</a>
+         <a data-role="button" data-inline="false" id="selectPhoto" class="selectPhoto">Select Photo</a>
          <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
          <img style="display:none;" id="largeImage" src="" />
       </div>
@@ -68,7 +70,7 @@
         <h1>Nework API</h1>
       </div>
   	  <div data-role="content">
-         <button id="checkNetwork">Check Network Type</button>
+        
        <p id="networkType">Nada</p>
       </div>
   </div>
