@@ -16,7 +16,7 @@
 
     // Wait for Cordova to connect with the device
     //
-	   $('.capturePhoto').click(function () {
+	   $('#capturePhoto').click(function () {
   		capturePhotoEdit();
 	});
 	
@@ -56,7 +56,7 @@
         <h1>Camera API</h1>
       </div>
   	  <div data-role="content">
-         <a href="#map" data-role="button" data-inline="false" class="mapIt">Map It</a>
+         <a data-role="button" data-inline="false" id="capturePhoto">Map It</a>
          <button id='selectPhoto' class='selectPhoto' name='selectPhoto'>From Photo Library</button><br>
          <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
          <img style="display:none;" id="largeImage" src="" />
