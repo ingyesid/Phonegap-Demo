@@ -9,14 +9,14 @@
    <script  type="text/javascript" src="js/jquery.mobile-1.0a2.min.js"></script>
    <script type="text/javascript" src="js/funtions.js"></script>
     <script src="phonegap.js"></script>
-   <script>
+    <script>
    $(function () {
    	var pictureSource;   // picture source
     var destinationType; // sets the format of returned value 
 
     // Wait for Cordova to connect with the device
     //
-	$("#capturePhoto").bind( "click", function(event, ui) {
+	   $('.capturePhoto').click(function () {
   		capturePhotoEdit();
 	});
 	
@@ -33,7 +33,6 @@
    
 	
    </script>
-	
   </head>
   <body>
   // index page 
@@ -57,8 +56,8 @@
         <h1>Camera API</h1>
       </div>
   	  <div data-role="content">
-         <button id="capturePhoto">Capture Photo</button>
-         <button id='selectPhoto'>From Photo Library</button><br>
+         <a href="#map" data-role="button" data-inline="false" class="mapIt">Map It</a>
+         <button id='selectPhoto' class='selectPhoto' name='selectPhoto'>From Photo Library</button><br>
          <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
          <img style="display:none;" id="largeImage" src="" />
       </div>
@@ -69,10 +68,12 @@
         <h1>Nework API</h1>
       </div>
   	  <div data-role="content">
-         <button id="hechNetwork">Check Network Type</button>
+         <button id="checkNetwork">Check Network Type</button>
        <p id="networkType">Nada</p>
       </div>
   </div>
 
   </body>
+ 
+	
 </html>
