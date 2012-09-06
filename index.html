@@ -1,360 +1,104 @@
-
-
 <!DOCTYPE html>
 <html>
   <head>
-  
-   <meta name="viewport" content="width=deviceWidth; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;"/>
-   <title>Meridien 24/7</title>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-   <link rel="stylesheet" href="js/jquery.mobile-1.0a2.min.css" />
-   <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
-   <script  type="text/javascript" src="js/jquery.mobile-1.0a2.min.js"></script>
-   <script type="text/javascript" src="js/funtions.js"></script>
-   <script type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script>
-    <script>
+    <title>Capture Photo</title>
 
-   $(function () {
-    var pictureSource;   
-    var destinationType; 
-  
+    <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+    <script type="text/javascript" charset="utf-8">
 
-   function makeMap () {
-    if (map == null) {
-      latlng = new google.maps.LatLng(lat,lng); 
-      var options = { zoom: 16, center: latlng, disableDefaultUI: true, mapTypeId: google.maps.MapTypeId.ROADMAP };
-      map = new google.maps.Map(document.getElementById('gMap'), options);  
-      uRHere = new google.maps.Marker({ position: latlng, map: map, title: 'You are here' });
-    }
-  }
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+
+    // Wait for Cordova to connect with the device
+    //
     document.addEventListener("deviceready",onDeviceReady,false);
-  
+
+    // Cordova is ready to be used!
+    //
     function onDeviceReady() {
         pictureSource=navigator.camera.PictureSourceType;
         destinationType=navigator.camera.DestinationType;
-
     }
 
-
-   $('#capturePhoto').click(function () {
-      getPhoto();
-      
-     });
-   $('#selectPhoto').click(function () {
-      getPhoto(pictureSource.PHOTOLIBRARY);
-     });
-
-    $('#checkNetwork').click(function () {
-     checkConnection();
-     });
-    $('#checkLocation').click(function () {
-     getLocationUser();
-     });
-    $('#getjson').click(function () {
-      loadConferenciasList();
-     });
-
-    $('#save_contact').click(function () {
-     SaveContact();
-     });
-
-    $('#getContacts').click(function () {
-        getContactsList();
-     });
-
-     $('#scan').click(function () {
-        scan();
-     });
-
-     $('#showLocation').click(function () {
-       initialize();
-     });
-
-     
-
+    // Called when a photo is successfully retrieved
+    //
     function onPhotoDataSuccess(imageData) {
+      // Uncomment to view the base64 encoded image data
+      // console.log(imageData);
+
+      // Get image handle
+      //
       var smallImage = document.getElementById('smallImage');
+
+      // Unhide image elements
+      //
+      smallImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
       smallImage.src = "data:image/jpeg;base64," + imageData;
     }
 
+    // Called when a photo is successfully retrieved
+    //
     function onPhotoURISuccess(imageURI) {
-      var largeImage = document.getElementById('smallImage');
+      // Uncomment to view the image file URI 
+      // console.log(imageURI);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
       largeImage.src = imageURI;
     }
-    
-    function capturePhotoEdit() {
-      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-      destinationType: destinationType.DATA_URL });
+
+    // A button will call this function
+    //
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+        destinationType: destinationType.DATA_URL });
     }
 
-   
+    // A button will call this function
+    //
+    function capturePhotoEdit() {
+      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+        destinationType: destinationType.DATA_URL });
+    }
+
+    // A button will call this function
+    //
     function getPhoto(source) {
+      // Retrieve image file location from specified source
       navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
         destinationType: destinationType.FILE_URI,
         sourceType: source });
     }
 
-
- 
+    // Called if something bad happens.
+    // 
     function onFail(message) {
       alert('Failed because: ' + message);
     }
 
-   
-    function getLocationUser(){
-      navigator.geolocation.getCurrentPosition(onSuccessLocation, onErrorLocation);
-    
-    }
-   
-    function onSuccessLocation(position) {
-      
-      $('#geolocation').text('Latitude: ' + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
-    }
-
-   
-    function onErrorLocation(error) {
-       
-        $('#geolocation').text('code: '    + error.code    + '\n' +
-          'message: ' + error.message + '\n');
-    }
-
-    function checkConnection() {
-    var networkState = navigator.network.connection.type;
-
-    var states = {};
-    states[Connection.UNKNOWN]  = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI]     = 'WiFi connection';
-    states[Connection.CELL_2G]  = 'Cell 2G connection';
-    states[Connection.CELL_3G]  = 'Cell 3G connection';
-    states[Connection.CELL_4G]  = 'Cell 4G connection';
-    states[Connection.NONE]     = 'No network connection';
-
-    alert('Connection type: ' + states[networkState]);
-    }
-
-       
-    function loadConferenciasList(){
-
-       var feedurl = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=" +
-                   encodeURIComponent("http://mejorando.la/feed")
-          $.ajax({
-
-                 url: feedurl,  
-                 dataType: 'json',
-                 
-                 success: function(data) {
-
-                  
-                   var data_as_json = data.responseData.feed;                      
-                
-                   var entries = data_as_json.entries;
-
-                   $.each(entries, function(index, value) { 
-                      $("#_list").append("<li><a href=\"" + value.link + "\">" + value.title + "</a></li>");//
-                   });
-                   $("#_loading").hide();// escondemos el loading.gif
-                   $("#_list").show();          // mostramos la lista
-                   $("#_list").listview("refresh"); // refrescamos la lista
-                 }
-      });      
-    }
-
-
-   
-   
-    function SaveContact() {
-       
-        var contact = navigator.contacts.create();
-        
-        var name = new ContactName();
-
-        name.givenName = document.add_contact.firtsname.value;
-        name.familyName =document.add_contact.lastname.value;
-        contact.displayName = name.givenName;
-
-        contact.name = name;
-        var movil=document.add_contact.movil.value;
-        var phoneNumbers = [];
-        phoneNumbers[0] = new ContactField('mobile',movil, true);
-        phoneNumbers[1] = new ContactField('home', movil, false);
-       
-        contact.phoneNumbers = phoneNumbers;
-
-      
-        contact.save(onSaveContactSuccess,onSaveContactError);
-
-       
-    }
-
-    function onSaveContactSuccess(contact) {
-        alert("Save Success");
-    }
-
-
-    function onSaveContactError(contactError) {
-        alert("Error = " + contactError.code);
-    }
-
-    function getContactsList(){
-      var options = new ContactFindOptions();
-      options.filter=""; 
-      var filter = ["displayName"];
-      navigator.contacts.find(filter, onSuccessListContacts, onErrorListContacts, options);
-    }
-
-        
-    function onSuccessListContacts(contacts) {
-      $('#contact_list').empty();
-         alert('Contact : '+contacts.length);
-        for (var i=0; i<contacts.length; i++) {
-               $("#contact_list").append("<li><a>" +contacts[i].displayName+ "</a></li>");//
-               
-        }
-        $("#contact_list").show();         
-        $("#contact_list").listview("refresh"); 
-
-    function onErrorListContacts(contactError) {
-        alert('onError!');
-    };
-
-
-     function scan() {
-        window.plugins.barcodeScanner.scan(function(result) {
-                alert("We got a barcode\n" +
-                      "Result: " + result.text + "\n" +
-                      "Format: " + result.format); 
-            }, function(error) {
-                alert("Scanning failed: " + error);
-            });
-    }
-    
-    function encode(type, data) {
-        window.plugins.barcodeScanner.encode(type, data, function(result) {
-                alert("encode success: " + result);
-            }, function(error) {
-                alert("encoding failed: " + error);
-            });
-    }
-
-    function initialize() {
-    var latlng = new google.maps.LatLng(-34.397, 150.644);
-    var myOptions = {
-      zoom: 8,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-      var map = new google.maps.Map(document.getElementById("map_canvas"),
-          myOptions);
-    }
-
-
-
-   });
-   
-   </script>
+    </script>
   </head>
   <body>
-  
-   <div data-role="page"  class="type-index" data-theme="b">
-      <div data-role="header" data-position="fixed">
-        <h1>Demo's Phonegap API</h1>
-      </div>
-      
-      <div data-role="content">
-        <ul data-role="listview" data-inset="true">
-          <li><a href="#camera">Camera API</a></li>
-          <li><a href="#network">Network Connection </a> </li>
-          <li><a href="#geo">Location</a> </li>
-          <li id="getjson"><a href="#json">Get JSON</a> </li>
-          <li ><a href="#contact">Save Contact</a> </li>
-          <li id="getContacts"><a href="#contacts">Contact List</a> </li>
-          <li id="scan"><a href="#">Barcode Scan</a> </li>
-          <li ><a href="#mapa">Google Maps</a> </li>
-          
-        </ul>
-      </div>
-  </div>
-
-  <div data-role="page" id="camera" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Camera API</h1>
-      </div>
-      <div data-role="content">
-         <a data-role="button" data-inline="false" id="capturePhoto" class="capturePhoto">Capture</a>
-         <a data-role="button" data-inline="false" id="selectPhoto" class="selectPhoto">Select Photo</a>
-      
-          <img  id="smallImage" src="" class="thumbnail" width="50%" /></li>
-             
-      </div>
-  </div>
- 
-  <div data-role="page" id="network" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Nework API</h1>
-      </div>
-      <div data-role="content">
-        <a data-role="button" data-inline="false" id="checkNetwork" class="checkNetwork">Check Network</a>
-       
-      </div>
-  </div>
-  
-  <div data-role="page" id="geo" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Geolocation API</h1>
-      </div>
-      <div data-role="content">
-          <a data-role="button" data-inline="false" id="checkLocation" class="checkLocation">Get Location</a>
-        <p id="geolocation" class="geolocation">Finding geolocation..</p>
-      </div>
-  </div>
-
-  </div>
-
-  <div data-role="page" id="json" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Get JSON</h1>
-      </div>
-      <div data-role="content">
-          <img src="js/images/ajax-loader.gif" id="_loading"  />
-          <ul data-role="listview" data-inset="true" data-filter="true" id="_list" data-filter-placeholder="Buscar..."></ul>
-      </div>
-  </div>
-
- 
-  <div data-role="page" id="contact" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Save Contact</h1>
-      </div>
-      <div data-role="content">
-         <form name="add_contact">
-           <input type="text" name="firtsname" id="firtsname" value="" placeholder="name"/>
-          <input type="text" name="lastname" id="lastname" value="" placeholder="last name"/>
-          <input type="tel" name="movil" id="movil" value="" placeholder="movil"/>
-          <a data-role="button" data-inline="false" id="save_contact" data-theme="a">save</a>
-          <a href="#index" data-role="button" data-inline="false" id="cancel_contact" data-theme="d">Cancel</a>
-         </form>
-        
-      </div>
-  </div>
- 
-  <div data-role="page" id="mapa" data-theme="a">
-      <div data-role="header" data-position="fixed">
-        <h1>Google Maps Api</h1>
-      </div>
-      <div data-role="content">
-        <div id="map_canvas"></div>
-        <button id="showLocation"> Show Location </button>
-      </div>
-  </div>
+    <button onclick="capturePhoto();">Capture Photo</button> <br>
+    <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
+    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+    <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />
   </body>
- 
-
 </html>
